@@ -19,10 +19,10 @@ s3.listObjectsV2( param, function(err, data) {
     if (err) {
         console.log("Error", err);
     } else {
-        data.Contents.forEach(ele => {
+        if ( data.Contents.length == 0 ) {
             let param = {
                 Bucket: bucket,
-                Prefix: ele.Key
+                Prefix: 'バージョニングtest資料.pdf'
             }
             s3.listObjectVersions(param,function(err, data) {
                 if(err) {
@@ -31,6 +31,20 @@ s3.listObjectsV2( param, function(err, data) {
                     console.log(data)
                 }
             })
-        });
+        } else {
+            data.Contents.forEach(ele => {
+                let param = {
+                    Bucket: bucket,
+                    Prefix: ele.Key
+                }
+                s3.listObjectVersions(param,function(err, data) {
+                    if(err) {
+                        console.log(err)
+                    } else {
+                        console.log(data)
+                    }
+                })
+            });
+        }
     }
 });
